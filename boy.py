@@ -1,7 +1,8 @@
 from pico2d import (load_image, get_time,
                     SDL_KEYDOWN, SDL_KEYUP, SDLK_LEFT, SDLK_RIGHT)
 
-from state_machine import StateMachine, space_down, time_out
+from state_machine import (StateMachine, space_down, time_out,
+                           move_start, move_stop)
 
 
 class Idle:
@@ -51,6 +52,26 @@ class Sleep:
                                                self.boy.x + 25, self.boy.y - 25, 100, 100)
 
 
+class Run:
+    def __init__(self, boy):
+        self.boy = boy
+
+    def enter(self):
+        self.boy.frame = 0
+
+    def exit(self):
+        pass
+
+    def do(self):
+        self.boy.frame = (self.boy.frame + 1) % 8
+        self.boy.x += self.boy.dir * 5
+
+    def draw(self):
+        row = 100 if self.boy.face_dir == 1 else 0
+        self.boy.image.clip_draw(self.boy.frame * 100, row, 100, 100,
+                                 self.boy.x, self.boy.y)
+
+
 class Boy:
     def __init__(self):
         self.x, self.y = 400, 90
@@ -61,11 +82,13 @@ class Boy:
 
         self.IDLE = Idle(self)
         self.SLEEP = Sleep(self)
+        self.RUN = Run(self)
         self.state_machine = StateMachine(
             self.IDLE,
             {
-                self.IDLE: {time_out: self.SLEEP},
+                self.IDLE: {time_out: self.SLEEP, move_start: self.RUN},
                 self.SLEEP: {space_down: self.IDLE},
+                self.RUN: {move_stop: self.IDLE},
             }
         )
 
