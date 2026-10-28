@@ -1,4 +1,4 @@
-from pico2d import SDL_KEYDOWN, SDLK_SPACE
+from pico2d import SDL_KEYDOWN, SDLK_SPACE, SDLK_a
 
 
 # 이벤트는 (종류, 값) 튜플이다.
@@ -6,6 +6,10 @@ from pico2d import SDL_KEYDOWN, SDLK_SPACE
 
 def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
+
+
+def a_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
 
 
 def time_out(e):
