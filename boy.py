@@ -1,4 +1,4 @@
-from pico2d import (load_image, get_time,
+from pico2d import (load_image, get_time, get_canvas_width, clamp,
                     SDL_KEYDOWN, SDL_KEYUP, SDLK_LEFT, SDLK_RIGHT)
 
 from state_machine import (StateMachine, space_down, time_out,
@@ -65,6 +65,8 @@ class Run:
     def do(self):
         self.boy.frame = (self.boy.frame + 1) % 8
         self.boy.x += self.boy.dir * 5
+        # 화면 밖으로 나가지 않도록 x 좌표를 제한한다.
+        self.boy.x = clamp(25, self.boy.x, get_canvas_width() - 25)
 
     def draw(self):
         row = 100 if self.boy.face_dir == 1 else 0
