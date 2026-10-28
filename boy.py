@@ -1,6 +1,6 @@
 from pico2d import load_image, get_time
 
-from state_machine import StateMachine, time_out
+from state_machine import StateMachine, space_down, time_out
 
 
 class Idle:
@@ -63,7 +63,7 @@ class Boy:
             self.IDLE,
             {
                 self.IDLE: {time_out: self.SLEEP},
-                self.SLEEP: {},
+                self.SLEEP: {space_down: self.IDLE},
             }
         )
 
