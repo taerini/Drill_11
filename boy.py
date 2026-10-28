@@ -89,7 +89,7 @@ class Boy:
             self.IDLE,
             {
                 self.IDLE: {time_out: self.SLEEP, move_start: self.RUN},
-                self.SLEEP: {space_down: self.IDLE},
+                self.SLEEP: {space_down: self.IDLE, move_start: self.RUN},
                 self.RUN: {move_stop: self.IDLE},
             }
         )
