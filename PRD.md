@@ -28,3 +28,69 @@
 - 언어 / 라이브러리: Python 3, pico2d
 - AutoRun은 반드시 별도의 상태 클래스로 구현한다.
 - 상태 다이어그램 이미지 파일을 저장소에 포함한다.
+
+## 5. 상태 정의
+
+| 상태 | 모습 | 동작 |
+|---|---|---|
+| Idle | 서 있음 | 제자리 애니메이션. 진입 후 5초가 지나면 time_out 이벤트 발생 |
+| Sleep | 90도 회전해 누운 모습 | 제자리에서 잠 |
+| Run | 달리는 모습 | 눌린 방향키 방향으로 이동 (화면 안으로 제한) |
+| AutoRun | 2배 크기로 달리는 모습 | 키 조작 없이 빠르게 이동, 좌우 끝에서 방향 전환. 진입 후 5초가 지나면 time_out 이벤트 발생 |
+
+## 6. 상태 전환
+
+![상태 다이어그램](state_diagram.png)
+
+| 현재 상태 | 이벤트 | 다음 상태 |
+|---|---|---|
+| Idle | `time_out` (5초 경과) | Sleep |
+| Idle | `move_start` (←/→ 누름) | Run |
+| Idle | `a_down` (`a` 키) | AutoRun |
+| Sleep | `space_down` (SPACE 키) | Idle |
+| Sleep | `move_start` (←/→ 누름) | Run |
+| Run | `move_stop` (방향키 모두 뗌) | Idle |
+| AutoRun | `time_out` (5초 경과) | Idle |
+| AutoRun | `move_start` (←/→ 누름) | Run |
+
+방향키는 `dir` 값 하나로 관리한다. 오른쪽 키를 누르면 +1, 왼쪽 키를 누르면 -1이고 떼면 반대로 더한다.
+양쪽 키를 동시에 누르면 `dir`이 0이 되어 Idle이 된다.
+
+## 7. 수치
+
+| 항목 | 값 |
+|---|---|
+| Run 속도 | 5 px / 프레임 |
+| AutoRun 속도 | 15 px / 프레임 (Run의 3배) |
+| 기본 크기 | 100 × 100 |
+| AutoRun 크기 | 200 × 200 (2배, 발이 땅에 닿도록 위로 올려 그림) |
+| Idle → Sleep, AutoRun → Idle 대기 시간 | 5초 |
+
+## 8. 구현 구조
+
+| 파일 | 내용 |
+|---|---|
+| `main.py` | 게임 루프, 키 이벤트를 소년에게 전달 |
+| `state_machine.py` | `StateMachine` 클래스(규칙 테이블 기반 전환)와 이벤트 검사 함수 |
+| `boy.py` | `Idle`, `Sleep`, `Run`, `AutoRun` 상태 클래스와 `Boy` 클래스 |
+| `grass.py` | 배경 잔디 |
+| `state_diagram.png` | 상태 다이어그램 |
+
+## 9. 채점 기준 대응
+
+| 채점 기준 | 구현 위치 |
+|---|---|
+| `a`를 누르면 AutoRun 상태로 이동 | `Boy` 규칙 테이블의 `self.IDLE: {a_down: self.AUTO_RUN}` |
+| 5초 이상 지나면 Idle 복귀 | `AutoRun.do()`의 타이머, 규칙 `self.AUTO_RUN: {time_out: self.IDLE}` |
+| AutoRun에서 속도가 빨라지고 크기가 커짐 | `AutoRun.SPEED`, `AutoRun.SIZE` |
+| AutoRun에서 좌우 끝 자동 방향 전환 | `AutoRun.do()`의 경계 검사 |
+| 상태 다이어그램 | `state_diagram.png` |
+
+## 10. 테스트 시나리오
+
+- [ ] 실행 직후 Idle 상태로 서 있다.
+- [ ] Idle에서 `a`를 누르면 커진 소년이 빠르게 달리고, 화면 끝에서 방향을 바꾼다.
+- [ ] AutoRun 5초 후 원래 크기로 Idle 상태가 된다.
+- [ ] AutoRun 중 ←를 누르면 원래 크기로 왼쪽으로 달리고, 키를 떼면 Idle이 된다.
+- [ ] Run 중 화면 끝에서 더 나가지 않는다.
+- [ ] Idle 5초 후 누워서 자고, SPACE로 일어나며, 방향키로 바로 달린다.
