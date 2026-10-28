@@ -1,6 +1,6 @@
-from pico2d import load_image
+from pico2d import load_image, get_time
 
-from state_machine import StateMachine
+from state_machine import StateMachine, time_out
 
 
 class Idle:
@@ -9,12 +9,15 @@ class Idle:
 
     def enter(self):
         self.boy.frame = 0
+        self.start_time = get_time()
 
     def exit(self):
         pass
 
     def do(self):
         self.boy.frame = (self.boy.frame + 1) % 8
+        if get_time() - self.start_time > 5:
+            self.boy.state_machine.handle_event(('TIME_OUT', None))
 
     def draw(self):
         row = 300 if self.boy.face_dir == 1 else 200

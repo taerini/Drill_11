@@ -1,5 +1,8 @@
 # 이벤트는 (종류, 값) 튜플이다.
-#   ('INPUT', SDL 이벤트)
+#   ('INPUT', SDL 이벤트), ('TIME_OUT', None)
+
+def time_out(e):
+    return e[0] == 'TIME_OUT'
 
 
 class StateMachine:
