@@ -76,6 +76,7 @@ class Run:
 
 class AutoRun:
     SPEED = 15   # Run 의 3배 속도
+    SIZE = 200   # Run 의 2배 크기
 
     def __init__(self, boy):
         self.boy = boy
@@ -91,7 +92,7 @@ class AutoRun:
         self.boy.x += self.boy.face_dir * AutoRun.SPEED
 
         # 화면 좌우 끝에 닿으면 방향을 바꾼다.
-        half = 25
+        half = AutoRun.SIZE // 4
         if self.boy.x > get_canvas_width() - half:
             self.boy.x = get_canvas_width() - half
             self.boy.face_dir = -1
@@ -101,8 +102,10 @@ class AutoRun:
 
     def draw(self):
         row = 100 if self.boy.face_dir == 1 else 0
+        # 커진 만큼 위로 올려서 발이 땅에 닿게 그린다.
         self.boy.image.clip_draw(self.boy.frame * 100, row, 100, 100,
-                                 self.boy.x, self.boy.y)
+                                 self.boy.x, self.boy.y + (AutoRun.SIZE - 100) // 2,
+                                 AutoRun.SIZE, AutoRun.SIZE)
 
 
 class Boy:
