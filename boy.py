@@ -88,6 +88,15 @@ class AutoRun:
         self.boy.frame = (self.boy.frame + 1) % 8
         self.boy.x += self.boy.face_dir * 5
 
+        # 화면 좌우 끝에 닿으면 방향을 바꾼다.
+        half = 25
+        if self.boy.x > get_canvas_width() - half:
+            self.boy.x = get_canvas_width() - half
+            self.boy.face_dir = -1
+        elif self.boy.x < half:
+            self.boy.x = half
+            self.boy.face_dir = 1
+
     def draw(self):
         row = 100 if self.boy.face_dir == 1 else 0
         self.boy.image.clip_draw(self.boy.frame * 100, row, 100, 100,
