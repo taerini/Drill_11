@@ -75,6 +75,8 @@ class Run:
 
 
 class AutoRun:
+    SPEED = 15   # Run 의 3배 속도
+
     def __init__(self, boy):
         self.boy = boy
 
@@ -86,7 +88,7 @@ class AutoRun:
 
     def do(self):
         self.boy.frame = (self.boy.frame + 1) % 8
-        self.boy.x += self.boy.face_dir * 5
+        self.boy.x += self.boy.face_dir * AutoRun.SPEED
 
         # 화면 좌우 끝에 닿으면 방향을 바꾼다.
         half = 25
