@@ -83,6 +83,7 @@ class AutoRun:
 
     def enter(self):
         self.boy.frame = 0
+        self.start_time = get_time()
 
     def exit(self):
         pass
@@ -99,6 +100,9 @@ class AutoRun:
         elif self.boy.x < half:
             self.boy.x = half
             self.boy.face_dir = 1
+
+        if get_time() - self.start_time > 5:
+            self.boy.state_machine.handle_event(('TIME_OUT', None))
 
     def draw(self):
         row = 100 if self.boy.face_dir == 1 else 0
@@ -126,7 +130,7 @@ class Boy:
                 self.IDLE: {time_out: self.SLEEP, move_start: self.RUN, a_down: self.AUTO_RUN},
                 self.SLEEP: {space_down: self.IDLE, move_start: self.RUN},
                 self.RUN: {move_stop: self.IDLE},
-                self.AUTO_RUN: {},
+                self.AUTO_RUN: {time_out: self.IDLE},
             }
         )
 
