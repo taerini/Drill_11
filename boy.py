@@ -30,7 +30,15 @@ class Boy:
         self.image = load_image('animation_sheet.png')
 
         self.IDLE = Idle(self)
-        self.state_machine = StateMachine(self.IDLE)
+        self.state_machine = StateMachine(
+            self.IDLE,
+            {
+                self.IDLE: {},
+            }
+        )
+
+    def handle_event(self, event):
+        self.state_machine.handle_event(('INPUT', event))
 
     def update(self):
         self.state_machine.update()
