@@ -1,4 +1,5 @@
-from pico2d import load_image, get_time
+from pico2d import (load_image, get_time,
+                    SDL_KEYDOWN, SDL_KEYUP, SDLK_LEFT, SDLK_RIGHT)
 
 from state_machine import StateMachine, space_down, time_out
 
@@ -54,6 +55,7 @@ class Boy:
     def __init__(self):
         self.x, self.y = 400, 90
         self.frame = 0
+        self.dir = 0        # 눌려 있는 방향키의 합: 오른쪽 +1, 왼쪽 -1
         self.face_dir = 1   # 바라보는 방향: 오른쪽 1, 왼쪽 -1
         self.image = load_image('animation_sheet.png')
 
@@ -68,7 +70,15 @@ class Boy:
         )
 
     def handle_event(self, event):
-        self.state_machine.handle_event(('INPUT', event))
+        if event.type in (SDL_KEYDOWN, SDL_KEYUP) and event.key in (SDLK_LEFT, SDLK_RIGHT):
+            # 키를 누를 때와 뗄 때 dir 을 반대로 바꿔서, 양쪽을 동시에 누르면 0 이 된다.
+            sign = 1 if event.type == SDL_KEYDOWN else -1
+            self.dir += sign if event.key == SDLK_RIGHT else -sign
+            if self.dir != 0:
+                self.face_dir = self.dir
+            self.state_machine.handle_event(('DIR', self.dir))
+        else:
+            self.state_machine.handle_event(('INPUT', event))
 
     def update(self):
         self.state_machine.update()
