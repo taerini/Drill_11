@@ -15,7 +15,7 @@ python main.py
 | 키 | 동작 |
 |---|---|
 | ← / → | 좌우로 달리기 (Run) |
-| `a` | Idle에서 자동 무적 런 (AutoRun) |
+| `a` | Idle / Run에서 자동 무적 런 (AutoRun) |
 | SPACE | 잠든 소년 깨우기 (Sleep → Idle) |
 | ESC | 종료 |
 

@@ -15,7 +15,7 @@
 
 | ID | 요구사항 |
 |---|---|
-| F1 | Idle 상태에서 `a` 키를 누르면 AutoRun 상태가 되어, 키 조작 없이 계속 좌우로 이동한다. |
+| F1 | Idle 또는 Run 상태에서 `a` 키를 누르면 AutoRun 상태가 되어, 키 조작 없이 계속 좌우로 이동한다. Run에서 들어가면 달리던 방향으로 출발한다. |
 | F2 | AutoRun 상태에서 소년은 속도가 빨라지고 크기가 확대된다. |
 | F3 | AutoRun 상태에서 화면의 좌우 끝에 닿으면 자동으로 방향을 바꾼다. |
 | F4 | AutoRun 상태에서 5초 이상 지나면 Idle 상태로 돌아간다. |
@@ -50,6 +50,7 @@
 | Sleep | `space_down` (SPACE 키) | Idle |
 | Sleep | `move_start` (←/→ 누름) | Run |
 | Run | `move_stop` (방향키 모두 뗌) | Idle |
+| Run | `a_down` (`a` 키) | AutoRun |
 | AutoRun | `time_out` (5초 경과) | Idle |
 | AutoRun | `move_start` (←/→ 누름) | Run |
 
@@ -80,7 +81,7 @@
 
 | 채점 기준 | 구현 위치 |
 |---|---|
-| `a`를 누르면 AutoRun 상태로 이동 | `Boy` 규칙 테이블의 `self.IDLE: {a_down: self.AUTO_RUN}` |
+| `a`를 누르면 AutoRun 상태로 이동 | `Boy` 규칙 테이블의 `self.IDLE: {a_down: self.AUTO_RUN}`, `self.RUN: {a_down: self.AUTO_RUN}` |
 | 5초 이상 지나면 Idle 복귀 | `AutoRun.do()`의 타이머, 규칙 `self.AUTO_RUN: {time_out: self.IDLE}` |
 | AutoRun에서 속도가 빨라지고 크기가 커짐 | `AutoRun.SPEED`, `AutoRun.SIZE` |
 | AutoRun에서 좌우 끝 자동 방향 전환 | `AutoRun.do()`의 경계 검사 |
@@ -91,6 +92,7 @@
 - [ ] 실행 직후 Idle 상태로 서 있다.
 - [ ] Idle에서 `a`를 누르면 커진 소년이 빠르게 달리고, 화면 끝에서 방향을 바꾼다.
 - [ ] AutoRun 5초 후 원래 크기로 Idle 상태가 된다.
+- [ ] Run 중 `a`를 누르면 달리던 방향으로 AutoRun이 시작되고, 방향키를 떼도 AutoRun이 유지된다.
 - [ ] AutoRun 중 ←를 누르면 원래 크기로 왼쪽으로 달리고, 키를 떼면 Idle이 된다.
 - [ ] Run 중 화면 끝에서 더 나가지 않는다.
 - [ ] Idle 5초 후 누워서 자고, SPACE로 일어나며, 방향키로 바로 달린다.
